@@ -1,0 +1,88 @@
+services:
+  sm3:
+    image: bitnamilegacy/spark:3.5
+    container_name: sm3
+    hostname: sm3
+    ports:
+      - "7073:7077"
+      - "8083:8080"
+    environment:
+      - SPARK_MODE=master
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+    volumes:
+      - ../data:/workspace/data
+    networks:
+      - cluster3
+
+  sw31:
+    image: bitnamilegacy/spark:3.5
+    container_name: sw31
+    hostname: sw31
+    ports:
+      - "8084:8081"
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://sm3:7077
+      - SPARK_WORKER_MEMORY=1G
+      - SPARK_WORKER_CORES=2
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+    volumes:
+      - ../data:/workspace/data
+    depends_on:
+      - sm3
+    networks:
+      - cluster3
+
+  sw32:
+    image: bitnamilegacy/spark:3.5
+    container_name: sw32
+    hostname: sw32
+    ports:
+      - "8085:8081"
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://sm3:7077
+      - SPARK_WORKER_MEMORY=1G
+      - SPARK_WORKER_CORES=2
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+    volumes:
+      - ../data:/workspace/data
+    depends_on:
+      - sm3
+    networks:
+      - cluster3
+
+  sw33:
+    image: bitnamilegacy/spark:3.5
+    container_name: sw33
+    hostname: sw33
+    ports:
+      - "8086:8081"
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://sm3:7077
+      - SPARK_WORKER_MEMORY=1G
+      - SPARK_WORKER_CORES=2
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+    volumes:
+      - ../data:/workspace/data
+    depends_on:
+      - sm3
+    networks:
+      - cluster3
+
+networks:
+  cluster3:
+    external: true

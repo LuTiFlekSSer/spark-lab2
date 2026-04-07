@@ -1,0 +1,137 @@
+services:
+  nn3:
+    image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+    container_name: nn3
+    ports:
+      - "9873:9870"
+      - "9003:9000"
+    volumes:
+      - nn3_name:/hadoop/dfs/name
+    environment:
+      - CLUSTER_NAME=cluster3
+    env_file:
+      - ../env/hadoop-3-node.env
+    networks:
+      - cluster3
+
+  dn31:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: dn31
+    volumes:
+      - dn31_data:/hadoop/dfs/data
+    environment:
+      SERVICE_PRECONDITION: "nn3:9870"
+    env_file:
+      - ../env/hadoop-3-node.env
+    depends_on:
+      - nn3
+    networks:
+      - cluster3
+
+  dn32:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: dn32
+    volumes:
+      - dn32_data:/hadoop/dfs/data
+    environment:
+      SERVICE_PRECONDITION: "nn3:9870"
+    env_file:
+      - ../env/hadoop-3-node.env
+    depends_on:
+      - nn3
+    networks:
+      - cluster3
+
+  dn33:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: dn33
+    volumes:
+      - dn33_data:/hadoop/dfs/data
+    environment:
+      SERVICE_PRECONDITION: "nn3:9870"
+    env_file:
+      - ../env/hadoop-3-node.env
+    depends_on:
+      - nn3
+    networks:
+      - cluster3
+
+  rm3:
+    image: bde2020/hadoop-resourcemanager:2.0.0-hadoop3.2.1-java8
+    container_name: rm3
+    ports:
+      - "8089:8088"
+    environment:
+      SERVICE_PRECONDITION: "nn3:9870 dn31:9864 dn32:9864 dn33:9864"
+    env_file:
+      - ../env/hadoop-3-node.env
+    depends_on:
+      - dn31
+      - dn32
+      - dn33
+    networks:
+      - cluster3
+
+  nm31:
+    image: bde2020/hadoop-nodemanager:2.0.0-hadoop3.2.1-java8
+    container_name: nm31
+    environment:
+      SERVICE_PRECONDITION: "nn3:9870 rm3:8088 dn31:9864"
+    env_file:
+      - ../env/hadoop-3-node.env
+    depends_on:
+      - rm3
+    networks:
+      - cluster3
+
+  nm32:
+    image: bde2020/hadoop-nodemanager:2.0.0-hadoop3.2.1-java8
+    container_name: nm32
+    environment:
+      SERVICE_PRECONDITION: "nn3:9870 rm3:8088 dn32:9864"
+    env_file:
+      - ../env/hadoop-3-node.env
+    depends_on:
+      - rm3
+    networks:
+      - cluster3
+
+  nm33:
+    image: bde2020/hadoop-nodemanager:2.0.0-hadoop3.2.1-java8
+    container_name: nm33
+    environment:
+      SERVICE_PRECONDITION: "nn3:9870 rm3:8088 dn33:9864"
+    env_file:
+      - ../env/hadoop-3-node.env
+    depends_on:
+      - rm3
+    networks:
+      - cluster3
+
+  hs3:
+    image: bde2020/hadoop-historyserver:2.0.0-hadoop3.2.1-java8
+    container_name: hs3
+    ports:
+      - "8183:8188"
+    volumes:
+      - hs3_data:/hadoop/yarn/timeline
+    environment:
+      SERVICE_PRECONDITION: "nn3:9870 rm3:8088 dn31:9864"
+    env_file:
+      - ../env/hadoop-3-node.env
+    depends_on:
+      - rm3
+    networks:
+      - cluster3
+
+volumes:
+  nn3_name:
+  dn31_data:
+  dn32_data:
+  dn33_data:
+  hs3_data:
+
+networks:
+  cluster3:
+    name: cluster3
+    driver: bridge

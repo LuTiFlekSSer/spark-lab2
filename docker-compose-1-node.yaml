@@ -1,0 +1,6 @@
+name: lab2-1-node
+
+include:
+  - ./containers/hadoop-1-node.yaml
+  - ./containers/spark-1-node.yaml
+  - ./containers/worker-1-node.yaml

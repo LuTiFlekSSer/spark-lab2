@@ -1,0 +1,33 @@
+services:
+  worker:
+    build:
+      context: ../worker
+    container_name: worker-3-node
+    environment:
+      CLUSTER_TAG: "3dn"
+      HDFS_URI: "hdfs://nn3:9000"
+      SPARK_MASTER: "spark://sm3:7077"
+      DATASET_PATH: "/workspace/data/spotify.csv"
+      NAMENODE_HOST: "nn3"
+      NAMENODE_PORT: "9000"
+      SPARK_HOST: "sm3"
+      SPARK_PORT: "7077"
+    volumes:
+      - ../data:/workspace/data
+      - ../results:/workspace/results
+    depends_on:
+      - nn3
+      - dn31
+      - dn32
+      - dn33
+      - rm3
+      - sm3
+      - sw31
+      - sw32
+      - sw33
+    networks:
+      - cluster3
+
+networks:
+  cluster3:
+    external: true

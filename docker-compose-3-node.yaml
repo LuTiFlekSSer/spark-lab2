@@ -1,0 +1,6 @@
+name: lab2-3-node
+
+include:
+  - ./containers/hadoop-3-node.yaml
+  - ./containers/spark-3-node.yaml
+  - ./containers/worker-3-node.yaml

@@ -1,0 +1,29 @@
+services:
+  worker:
+    build:
+      context: ../worker
+    container_name: worker-1-node
+    environment:
+      CLUSTER_TAG: "1dn"
+      HDFS_URI: "hdfs://nn1:9000"
+      SPARK_MASTER: "spark://sm1:7077"
+      DATASET_PATH: "/workspace/data/spotify.csv"
+      NAMENODE_HOST: "nn1"
+      NAMENODE_PORT: "9000"
+      SPARK_HOST: "sm1"
+      SPARK_PORT: "7077"
+    volumes:
+      - ../data:/workspace/data
+      - ../results:/workspace/results
+    depends_on:
+      - nn1
+      - dn1
+      - rm1
+      - sm1
+      - sw1
+    networks:
+      - cluster1
+
+networks:
+  cluster1:
+    external: true
